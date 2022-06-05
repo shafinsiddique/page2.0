@@ -17,6 +17,7 @@ let rec scan_integer input index nums =
                     then scan_integer input (index+1) (input.[index] :: nums)
                     else nums
 
+
 let rec pow a b = if (b == 0) then 1 else (a*(pow a (b-1)))
 
 let digit_to_int chr = match chr with
@@ -43,6 +44,25 @@ let try_scan_integer input index =
                         Ok (IntegerNumber (conv_int_list_to_int digits 0), num_of_digits)
             else Error "Not an integer"
 
+
+let rec scan_str input index characters =
+                        if (index < String.length input && input.[index] <> '\"')
+                        then scan_str input (index+1) (input.[index] :: characters)
+                        else if (input.[index] == '\"')
+                        then Ok (List.rev characters)
+                        else Error "Invalid string token, no closing quotations found"
+
+
+
+let try_scan_string input index =
+            if (input.[index] == '\"')
+            then let value = scan_str input (index+1) [] in
+                match value with
+                    | Ok value -> Ok ((StringVal (String.of_seq (List.to_seq value))), (List.length value)+2)
+                    | Error e -> Error e
+            else Error "Not a string"
+
+
 let rec any_of options input index = match options with
             | [] -> Error "Unable to match to a token."
             | hd::ls -> let res = (hd input index) in
@@ -64,7 +84,7 @@ let try_tokenize_single_char input index = match (input.[index]) with
 
 let rec _tokenize input index tokens =
     if (index < (String.length input))
-    then let result = any_of [try_tokenize_single_char; try_scan_integer] input index in
+    then let result = any_of [try_tokenize_single_char; try_scan_integer; try_scan_string] input index in
         match result with
             | Ok (token, chars_consumed) -> _tokenize input (index + chars_consumed) (token :: tokens)
             | _ -> Error "Unable to scan token."

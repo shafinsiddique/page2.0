@@ -1,0 +1,10 @@
+(** @canonical Dune__exe.Main *)
+module Main = Dune__exe__Main
+
+
+(** @canonical Dune__exe.Scanner *)
+module Scanner = Dune__exe__Scanner
+
+
+(** @canonical Dune__exe.Tokens *)
+module Tokens = Dune__exe__Tokens

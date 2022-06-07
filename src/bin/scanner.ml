@@ -70,16 +70,11 @@ let rec any_of options input index = match options with
                                 | Ok value -> Ok value
                                 | _ -> any_of ls input index
 
-(* let try_tokenize_into_single_char chr = function
-    | '(' -> Ok LeftParen
-    | ')' -> Ok RightParen
-    | '+' -> Ok Plus
-    | _ -> Error "Could not match to a single character." *)
-
 let try_tokenize_single_char input index = match (input.[index]) with
     | '(' -> Ok (LeftParen, 1)
     | ')' -> Ok (RightParen, 1)
     | '+' -> Ok (Plus, 1)
+    | ' ' -> Ok (EmptyToken, 1)
     | _ -> Error "Could not match to a single character."
 
 let rec _tokenize input index tokens =
@@ -90,6 +85,14 @@ let rec _tokenize input index tokens =
             | _ -> Error "Unable to scan token."
     else Ok tokens
 
+let remove_empty_tokens tokens =
+            let rec _remove_empty_tokens tokens new_list = match tokens with
+                | [] -> new_list
+                | hd::ls -> match hd with
+                    | EmptyToken -> _remove_empty_tokens ls new_list
+                    | _ -> _remove_empty_tokens ls (hd::new_list)
+            in _remove_empty_tokens tokens []
+
 let tokenize input = match (_tokenize input 0 []) with
-    | Ok tokens -> Ok (List.rev tokens)
+    | Ok tokens -> Ok (remove_empty_tokens tokens)
     | Error err -> Error err

@@ -27,6 +27,9 @@ open Tokens
 
 let create_expr_node name sub_expressions = match name with
     | "plus" -> AdditionNode sub_expressions
+    | "minus" -> SubtractionNode sub_expressions
+    | "divide" -> DivisionNode sub_expressions
+    | "multiply" -> MultiplicationNode sub_expressions
     | _ -> EmptyNode
 
 
@@ -42,6 +45,9 @@ and parse_compound_expression tokens = match tokens with
     | [] -> Error "No closing parenthesis."
     | hd::ls -> match hd with
         | Plus -> parse_list_expr "plus" ls []
+        | Minus -> parse_list_expr "minus" ls []
+        | Multiply -> parse_list_expr "multiply" ls []
+        | Divide -> parse_list_expr "divide" ls []
         | _ -> Error "Unexpected Token"
 
 and parse_list_expr name tokens sub_expressions = match tokens with

@@ -74,6 +74,9 @@ let try_tokenize_single_char input index = match (input.[index]) with
     | '(' -> Ok (LeftParen, 1)
     | ')' -> Ok (RightParen, 1)
     | '+' -> Ok (Plus, 1)
+    | '-' -> Ok (Minus, 1)
+    | '*' -> Ok (Multiply, 1)
+    | '/' -> Ok (Divide, 1)
     | ' ' -> Ok (EmptyToken, 1)
     | _ -> Error "Could not match to a single character."
 

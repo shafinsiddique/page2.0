@@ -20,5 +20,8 @@ let print_token token = match token with
     | RightParen -> get_format_string "RightParen"
     | IntegerNumber value -> get_format_string_with_int "IntegerValue" value
     | StringVal value -> get_format_string_with_string "StringValue" value
-    | Plus -> get_format_string "Plus"
+    | Plus -> get_format_string "+"
+    | Divide -> get_format_string "/"
+    | Multiply -> get_format_string "*"
+    | Minus -> get_format_string "-"
     | _ -> get_format_string "Needs to be implemented"

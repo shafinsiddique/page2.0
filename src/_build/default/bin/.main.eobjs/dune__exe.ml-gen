@@ -2,6 +2,14 @@
 module Ast_nodes = Dune__exe__Ast_nodes
 
 
+(** @canonical Dune__exe.Evaluator *)
+module Evaluator = Dune__exe__Evaluator
+
+
+(** @canonical Dune__exe.Expression *)
+module Expression = Dune__exe__Expression
+
+
 (** @canonical Dune__exe.Main *)
 module Main = Dune__exe__Main
 

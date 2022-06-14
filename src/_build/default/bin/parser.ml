@@ -30,6 +30,9 @@ let create_expr_node name sub_expressions = match name with
     | Minus -> SubtractionNode sub_expressions
     | Divide -> DivisionNode sub_expressions
     | Multiply -> MultiplicationNode sub_expressions
+    | GreaterThan -> ComparisonNode ('>', sub_expressions)
+    | LessThan -> ComparisonNode ('<', sub_expressions)
+    | Equal -> ComparisonNode ('=', sub_expressions)
     | _ -> EmptyNode
 
 
@@ -48,6 +51,9 @@ and parse_compound_expression tokens = match tokens with
         | Minus -> parse_list_expr hd ls []
         | Multiply -> parse_list_expr hd ls []
         | Divide -> parse_list_expr hd ls []
+        | GreaterThan -> parse_list_expr hd ls []
+        | LessThan -> parse_list_expr hd ls []
+        | Equal -> parse_list_expr hd ls []
         | _ -> Error "Unexpected Token"
 
 and parse_list_expr name tokens sub_expressions = match tokens with

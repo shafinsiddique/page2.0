@@ -27,12 +27,32 @@ let operate_sub_exprs expression_name sub_expressions = match sub_expressions wi
         | [] -> Error "Need 2 or more subexpressions for mathematical operation."
         | _::_ -> _operate_sub_exprs expression_name ls hd
 
+let compare_sub_expressions comp_type expr1 expr2 = match expr1 with
+    | IntExpression value1 -> (match expr2 with
+        | IntExpression value2 -> (match comp_type with
+            | '>' -> Ok (BooleanExpression (value1 > value2))
+            | '<' -> Ok (BooleanExpression (value1 < value2))
+            | '=' -> Ok (BooleanExpression (value1 == value2))
+            | _ -> Error "Some other character")
+        | _ -> Error "Need to be an int expression.")
+    | _ -> Error "Need to be an Int Expression."
+
+let compare_expressions comp_type sub_expressions = let first_element = (List.hd sub_expressions) in
+    let second_element = (List.hd (List.tl sub_expressions)) in
+        compare_sub_expressions comp_type first_element second_element
 
 let rec evaluate_sub_expressions sub_expressions results = match sub_expressions with
     | [] -> Ok results
     | hd::ls -> let evaluated = (evaluate_expr hd) in (match evaluated with
                                             | Ok expression -> evaluate_sub_expressions ls (expression::results)
                                             | _ -> Error "Error parsing expression.")
+
+and evaluate_comparison_expr comp_type sub_nodes = if (List.length sub_nodes <> 2)
+                                            then Error "Comparison Expressions require two subexpressions."
+                                            else let sub_evaluation = (evaluate_sub_expressions sub_nodes []) in
+                                                match sub_evaluation with
+                                                    | Ok expressions -> (compare_expressions comp_type expressions)
+                                                    | _ -> Error "Error parsing expression."
 
 and evaluate_math_expr expr = let sub_expressions = (match expr with
     | AdditionNode nodes -> nodes
@@ -54,6 +74,7 @@ and evaluate_expr expr = match expr with
     | SubtractionNode _ -> evaluate_math_expr expr
     | MultiplicationNode _ -> evaluate_math_expr expr
     | DivisionNode _ -> evaluate_math_expr expr
+    | ComparisonNode (comp_type, nodes) -> evaluate_comparison_expr comp_type nodes
     | _ -> Error "need to implement evaluator."
 
 

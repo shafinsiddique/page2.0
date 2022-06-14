@@ -10,6 +10,9 @@ type token =
     | Minus
     | Divide
     | Multiply
+    | GreaterThan
+    | LessThan
+    | Equal
 
 let get_format_string token_type = printf "TokenType : %s\n" token_type
 let get_format_string_with_int token_type value = printf "TokenType %s, Value %d\n" token_type value

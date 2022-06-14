@@ -70,15 +70,22 @@ let rec any_of options input index = match options with
                                 | Ok value -> Ok value
                                 | _ -> any_of ls input index
 
-let try_tokenize_single_char input index = match (input.[index]) with
-    | '(' -> Ok (LeftParen, 1)
-    | ')' -> Ok (RightParen, 1)
-    | '+' -> Ok (Plus, 1)
-    | '-' -> Ok (Minus, 1)
-    | '*' -> Ok (Multiply, 1)
-    | '/' -> Ok (Divide, 1)
-    | ' ' -> Ok (EmptyToken, 1)
-    | _ -> Error "Could not match to a single character."
+let try_tokenize_single_char input index =
+    let constructor = (match (input.[index]) with
+        | '(' -> Ok LeftParen
+        | ')' -> Ok RightParen
+        | '+' -> Ok Plus
+        | '-' -> Ok Minus
+        | '*' -> Ok Multiply
+        | '/' -> Ok Divide
+        | '>' -> Ok GreaterThan
+        | '<' -> Ok LessThan
+        | '=' -> Ok Equal
+        | ' ' -> Ok EmptyToken
+        | _ -> Error "Could not match to a single character.")
+    in (match constructor with
+        | Ok cons -> Ok (cons, 1)
+        | _ -> Error "Could not match to a single character")
 
 let rec _tokenize input index tokens =
     if (index < (String.length input))

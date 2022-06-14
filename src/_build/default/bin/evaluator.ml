@@ -54,6 +54,11 @@ and evaluate_comparison_expr comp_type sub_nodes = if (List.length sub_nodes <> 
                                                     | Ok expressions -> (compare_expressions comp_type expressions)
                                                     | _ -> Error "Error parsing expression."
 
+and evaluate_list_expr sub_expressions = let sub_evaluation = (evaluate_sub_expressions sub_expressions []) in
+    match sub_evaluation with
+        | Ok expressions -> Ok (ListExpression expressions)
+        | _ -> Error "Error parsing list expression."
+
 and evaluate_math_expr expr = let sub_expressions = (match expr with
     | AdditionNode nodes -> nodes
     | SubtractionNode nodes -> nodes
@@ -74,6 +79,7 @@ and evaluate_expr expr = match expr with
     | SubtractionNode _ -> evaluate_math_expr expr
     | MultiplicationNode _ -> evaluate_math_expr expr
     | DivisionNode _ -> evaluate_math_expr expr
+    | ListNode values -> evaluate_list_expr values
     | ComparisonNode (comp_type, nodes) -> evaluate_comparison_expr comp_type nodes
     | _ -> Error "need to implement evaluator."
 
@@ -81,5 +87,7 @@ and evaluate_expr expr = match expr with
 let rec evaluate ast = match ast with
     | [] -> ()
     | hd::ls -> let evaluated_expression = (evaluate_expr hd) in (match evaluated_expression with
-                                        | Ok expression -> let () = (print_expression expression) in (evaluate ls)
+                                        | Ok expression -> let () =
+                                                (print_expression expression;
+                                                Printf.printf "\n") in (evaluate ls)
                                         | Error msg -> Printf.printf "Error : %s" msg)

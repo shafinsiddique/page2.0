@@ -33,6 +33,9 @@ let create_expr_node name sub_expressions = match name with
     | GreaterThan -> ComparisonNode ('>', sub_expressions)
     | LessThan -> ComparisonNode ('<', sub_expressions)
     | Equal -> ComparisonNode ('=', sub_expressions)
+    | KeywordToken word -> (match word with
+                            | "list" -> ListNode sub_expressions
+                            | _ -> EmptyNode)
     | _ -> EmptyNode
 
 
@@ -54,6 +57,7 @@ and parse_compound_expression tokens = match tokens with
         | GreaterThan -> parse_list_expr hd ls []
         | LessThan -> parse_list_expr hd ls []
         | Equal -> parse_list_expr hd ls []
+        | KeywordToken _ -> parse_list_expr hd ls []
         | _ -> Error "Unexpected Token"
 
 and parse_list_expr name tokens sub_expressions = match tokens with

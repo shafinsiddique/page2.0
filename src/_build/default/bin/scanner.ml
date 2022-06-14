@@ -62,6 +62,17 @@ let try_scan_string input index =
                     | Error e -> Error e
             else Error "Not a string"
 
+let rec scan_word word input index word_index = if (index < (String.length input) && word_index < (String.length word))
+                                            then
+                                                (if ((String.get input index) == (String.get word word_index))
+                                                then (scan_word word input (index+1) (word_index+1))
+                                                else Error "Cannot match to word")
+                                            else if (index > (String.length input))
+                                            then Error "Cannot match to word"
+                                            else Ok (KeywordToken word, (String.length word))
+
+let try_scan_word word input index = scan_word word input index 0
+
 
 let rec any_of options input index = match options with
             | [] -> Error "Unable to match to a token."
@@ -89,7 +100,7 @@ let try_tokenize_single_char input index =
 
 let rec _tokenize input index tokens =
     if (index < (String.length input))
-    then let result = any_of [try_tokenize_single_char; try_scan_integer; try_scan_string] input index in
+    then let result = any_of [try_tokenize_single_char; try_scan_integer; try_scan_string; (try_scan_word "list")] input index in
         match result with
             | Ok (token, chars_consumed) -> _tokenize input (index + chars_consumed) (token :: tokens)
             | _ -> Error "Unable to scan token."

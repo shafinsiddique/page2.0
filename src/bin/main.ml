@@ -3,7 +3,7 @@ open Parser
 (* open Tokens *)
 open Printf
 open Evaluator
-let tokens = tokenize "(= 4 4)"
+let tokens = tokenize "(list (+ 2 4) 3 4)"
 
 let _ = match tokens with
     | Ok tokens_list -> let nodes = (parse_expression tokens_list) in

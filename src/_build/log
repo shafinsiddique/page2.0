@@ -1,9 +1,9 @@
-# dune build
+# dune exec ./bin/main.exe
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Workspace root: /Users/shafinsiddique/ocaml/page2.0/src
 # Auto-detected concurrency: 10
-$ /Users/shafinsiddique/.opam/default/bin/ocamlc.opt -config > /var/folders/5w/rz8hws3d0l1c1p42_cmb66nc0000gn/T/dune_452e10_output
+$ /Users/shafinsiddique/.opam/default/bin/ocamlc.opt -config > /var/folders/5w/rz8hws3d0l1c1p42_cmb66nc0000gn/T/dune_7bfdd1_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -115,11 +115,3 @@ $ /Users/shafinsiddique/.opam/default/bin/ocamlc.opt -config > /var/folders/5w/r
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /Users/shafinsiddique/.opam/default/bin/ocamldep.opt -modules -impl bin/evaluator.ml) > _build/default/bin/.main.eobjs/evaluator.ml.d
-$ (cd _build/default && /Users/shafinsiddique/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I bin/.main.eobjs/byte -I lib/.helloworld.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.main.eobjs/byte/dune__exe__Evaluator.cmo -c -impl bin/evaluator.ml)
-> File "bin/evaluator.ml", line 27, characters 60-62:
-> 27 |         | hd2::ls2 -> _operate_sub_exprs expression_name hd ls
->                                                                  ^^
-> Error: This expression has type expression list list
->        but an expression was expected of type expression
-[2]

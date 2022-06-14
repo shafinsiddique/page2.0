@@ -1,1 +1,1 @@
-bin/main.ml: Ast_nodes Evaluator Parser Printf Scanner
+bin/main.ml: Evaluator Parser Printf Scanner

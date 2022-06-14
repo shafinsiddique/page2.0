@@ -1,5 +1,6 @@
-open Expression
 open Ast_nodes
+open Expression
+
 let get_operation_result expression_name value1 value2 = match expression_name with
     | AdditionNode _ -> Ok (IntExpression (value1 + value2))
     | SubtractionNode _ -> Ok (IntExpression (value1 - value2))
@@ -24,40 +25,40 @@ let operate_sub_exprs expression_name sub_expressions = match sub_expressions wi
     | [] -> Error "Need 2 or more subexpressions for mathematical operatons."
     | hd::ls -> match ls with
         | [] -> Error "Need 2 or more subexpressions for mathematical operation."
-        | hd2::ls2 -> _operate_sub_exprs expression_name hd ls
+        | _::_ -> _operate_sub_exprs expression_name ls hd
 
 
-let evaluate_sub_expressions sub_expressions results = match sub_expressions with
+let rec evaluate_sub_expressions sub_expressions results = match sub_expressions with
     | [] -> Ok results
     | hd::ls -> let evaluated = (evaluate_expr hd) in (match evaluated with
                                             | Ok expression -> evaluate_sub_expressions ls (expression::results)
-                                            | _ -> evaluated)
+                                            | _ -> Error "Error parsing expression.")
 
-let rec evaluate_math_expr expr = let sub_expressions = (match expr with
+and evaluate_math_expr expr = let sub_expressions = (match expr with
     | AdditionNode nodes -> nodes
     | SubtractionNode nodes -> nodes
     | MultiplicationNode nodes -> nodes
-    | DivisionNode nodes -> nodes)
+    | DivisionNode nodes -> nodes
+    | _ -> [])
     in
-    let sub_evaluation = (evaluate_sub_exprs sub_expressions) in
+    let sub_evaluation = (evaluate_sub_expressions sub_expressions []) in
         match sub_evaluation with
-            | Ok expressions -> operate_sub_exprs expr sub_evaluation
-            | _ -> sub_evaluation
+            | Ok expressions -> operate_sub_exprs expr expressions
+            | _ -> Error "Error parsing expression"
 
 
 and evaluate_expr expr = match expr with
-    | IntegerNode value -> Ok (IntegerExpression value)
+    | IntegerNode value -> Ok (IntExpression value)
     | StringNode value -> Ok (StringExpression value)
-    | AdditionNode nodes -> evaluate_math_expr expr
-    | SubtractionNode nodes -> evaluate_math_expr expr
-    | MultiplicatioNode nodes -> evaluate_math_expr expr
-    | DivisionNode nodes -> evaluate_math_expr expr
+    | AdditionNode _ -> evaluate_math_expr expr
+    | SubtractionNode _ -> evaluate_math_expr expr
+    | MultiplicationNode _ -> evaluate_math_expr expr
+    | DivisionNode _ -> evaluate_math_expr expr
     | _ -> Error "need to implement evaluator."
 
 
-let evaluate ast = match ast with
+let rec evaluate ast = match ast with
     | [] -> ()
     | hd::ls -> let evaluated_expression = (evaluate_expr hd) in (match evaluated_expression with
-                                        | Ok expression -> let () = (print_expression expression) in (evaluate_expr ls)
-                                        | Error msg -> printf "Error : %s", msg
-                                        | _ -> printf "")
+                                        | Ok expression -> let () = (print_expression expression) in (evaluate ls)
+                                        | Error msg -> Printf.printf "Error : %s" msg)

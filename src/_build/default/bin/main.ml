@@ -2,9 +2,8 @@ open Scanner
 open Parser
 (* open Tokens *)
 open Printf
-open Ast_nodes
 open Evaluator
-let tokens = tokenize "(/ (+ 2 3) (* 2 3))"
+let tokens = tokenize "(- 10 (+ 2 1))"
 
 let _ = match tokens with
     | Ok tokens_list -> let nodes = (parse_expression tokens_list) in

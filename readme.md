@@ -1,7 +1,7 @@
 ## Welcome to Page2.0
 
 ### A Lisp Interpreter Written in OCaml.
-Yes, I really like Lisp, and interpreters .. and OCaml now too. The interpreter uses a recursive descent parser. Here's a short demo:
+This is a 'sequel' to my original interpreter,'Page', which was written in Go. Yes, I really like Lisp .. and interpreters. The interpreter uses a recursive descent parser. Here's a short demo:
 
 ![Lisp Demo](./demo/page2.0-demo.gif)
 

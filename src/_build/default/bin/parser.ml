@@ -35,6 +35,9 @@ let create_expr_node name sub_expressions = match name with
     | Equal -> ComparisonNode ('=', sub_expressions)
     | KeywordToken word -> (match word with
                             | "list" -> ListNode sub_expressions
+                            | "car" -> CarNode sub_expressions
+                            | "cdr" -> CdrNode sub_expressions
+                            | "length" -> LengthNode sub_expressions
                             | _ -> EmptyNode)
     | _ -> EmptyNode
 
@@ -46,6 +49,7 @@ let rec parse_expression tokens = match tokens with
             | StringVal value -> Ok ((StringNode value), ls)
             | LeftParen -> parse_compound_expression ls
             | _ -> Error "Unexpected Token."
+
 
 and parse_compound_expression tokens = match tokens with
     | [] -> Error "No closing parenthesis."
@@ -59,6 +63,7 @@ and parse_compound_expression tokens = match tokens with
         | Equal -> parse_list_expr hd ls []
         | KeywordToken _ -> parse_list_expr hd ls []
         | _ -> Error "Unexpected Token"
+
 
 and parse_list_expr name tokens sub_expressions = match tokens with
     | [] -> Error "No closing parenthesis."

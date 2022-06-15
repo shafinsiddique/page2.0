@@ -9,6 +9,9 @@ type ast_node = AdditionNode of ast_node list
         | EmptyNode
         | ComparisonNode of char * ast_node list
         | ListNode of ast_node list
+        | CarNode of ast_node list
+        | CdrNode of ast_node list
+        | LengthNode of ast_node list
 
 let rec print_compound_node node_name sub_nodes = let () = (printf "%s : " node_name) in (List.iter print_ast sub_nodes)
 

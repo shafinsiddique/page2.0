@@ -100,7 +100,10 @@ let try_tokenize_single_char input index =
 
 let rec _tokenize input index tokens =
     if (index < (String.length input))
-    then let result = any_of [try_tokenize_single_char; try_scan_integer; try_scan_string; (try_scan_word "list")] input index in
+    then let result =
+                any_of [try_tokenize_single_char; try_scan_integer;
+                                try_scan_string; (try_scan_word "list");
+                                (try_scan_word "car"); (try_scan_word "cdr"); (try_scan_word "length")] input index in
         match result with
             | Ok (token, chars_consumed) -> _tokenize input (index + chars_consumed) (token :: tokens)
             | _ -> Error "Unable to scan token."

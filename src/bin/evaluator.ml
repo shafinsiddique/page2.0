@@ -41,6 +41,8 @@ let compare_expressions comp_type sub_expressions = let first_element = (List.hd
     let second_element = (List.hd (List.tl sub_expressions)) in
         compare_sub_expressions comp_type first_element second_element
 
+let length_equals lst expected = (List.length lst) == expected
+
 let rec evaluate_sub_expressions sub_expressions results = match sub_expressions with
     | [] -> Ok results
     | hd::ls -> let evaluated = (evaluate_expr hd) in (match evaluated with
@@ -59,6 +61,28 @@ and evaluate_list_expr sub_expressions = let sub_evaluation = (evaluate_sub_expr
         | Ok expressions -> Ok (ListExpression expressions)
         | _ -> Error "Error parsing list expression."
 
+and evaluate_car_expr sub_expressions = let sub_evaluation = (evaluate_sub_expressions sub_expressions []) in
+    match sub_evaluation with
+        | Ok expressions -> (if ((List.length expressions) <> 1)
+                            then Error "Invalid Cons Expression."
+                            else let list_child = (List.hd expressions) in
+                                match list_child with
+                                    | ListExpression lst -> Ok (CarExpression (List.hd lst))
+                                    | _ -> Error "car expects a list.")
+        | _ -> Error "Error parsing list expression."
+
+
+
+and evaluate_cdr_expr sub_expressions = let sub_evaluation = (evaluate_sub_expressions sub_expressions []) in
+    match sub_evaluation with
+        | Ok expressions -> (if ((List.length expressions) <> 1)
+                            then Error "Invalid Cdr Expression."
+                            else let list_child = (List.hd expressions) in
+                                match list_child with
+                                    | ListExpression lst -> Ok (CdrExpression (ListExpression (List.tl lst)))
+                                    | _ -> Error "cdr expects a list.")
+        | _ -> Error "Error parsing list expression."
+
 and evaluate_math_expr expr = let sub_expressions = (match expr with
     | AdditionNode nodes -> nodes
     | SubtractionNode nodes -> nodes
@@ -71,6 +95,15 @@ and evaluate_math_expr expr = let sub_expressions = (match expr with
             | Ok expressions -> operate_sub_exprs expr expressions
             | _ -> Error "Error parsing expression"
 
+and evaluate_length_expr sub_expressions = let sub_evaluation = (evaluate_sub_expressions sub_expressions []) in
+    match sub_evaluation with
+        | Ok expressions -> (if (length_equals expressions 1)
+                            then (let expr = (List.hd expressions) in match expr with
+                                | ListExpression lst -> Ok (IntExpression (List.length lst))
+                                | StringExpression str -> Ok (IntExpression (String.length str))
+                                | _ -> Error "Length cannot be called on non-string or non-list objects.")
+                            else (Error "Error parsing length expression"))
+        | _ -> Error "Error parsing length subexpressions"
 
 and evaluate_expr expr = match expr with
     | IntegerNode value -> Ok (IntExpression value)
@@ -80,7 +113,10 @@ and evaluate_expr expr = match expr with
     | MultiplicationNode _ -> evaluate_math_expr expr
     | DivisionNode _ -> evaluate_math_expr expr
     | ListNode values -> evaluate_list_expr values
+    | CarNode values -> evaluate_car_expr values
+    | CdrNode values -> evaluate_cdr_expr values
     | ComparisonNode (comp_type, nodes) -> evaluate_comparison_expr comp_type nodes
+    | LengthNode values -> evaluate_length_expr values
     | _ -> Error "need to implement evaluator."
 
 
